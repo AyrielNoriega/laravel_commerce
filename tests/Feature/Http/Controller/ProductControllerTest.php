@@ -12,7 +12,7 @@ class ProductControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_get(): void
+    public function test_index(): void
     {
         User::factory()->count(5)->create();
         Product::factory()->count(5)->create();
@@ -82,13 +82,15 @@ class ProductControllerTest extends TestCase
 
     public function test_delete_product()
     {
-
+        User::factory()->create();
         $product = Product::factory()->create();
 
         $response = $this->deleteJson("/api/v1/products/{$product->getKey()}");
 
         $response->assertSuccessful();
         $response->assertHeader('content-type', 'application/json');
-        // $response->assertDeleted($product);
+
+        $this->assertDatabaseMissing('products', ['id' => $product->id]);
+
     }
 }
