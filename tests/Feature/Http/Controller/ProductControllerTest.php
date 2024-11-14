@@ -65,9 +65,9 @@ class ProductControllerTest extends TestCase
 
     public function test_update_product()
     {
-
+        User::factory()->create();
         $product = Product::factory()->create();
-        
+
         $data = [
             'title' => 'Nuevo producto',
             'description' => 'It is a long established fact that a reader will be distracted.',
