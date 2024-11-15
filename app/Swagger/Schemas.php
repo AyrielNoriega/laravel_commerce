@@ -37,6 +37,54 @@ namespace App\Swagger;
  *     @OA\Property(property="user_id", type="integer", example=1, description="ID of the user who created the product")
  * )
  *
+ * @OA\Schema(
+ *    schema="Order",
+ *    type="object",
+ *    @OA\Property(property="id", type="integer"),
+ *    @OA\Property(property="user_id", type="integer"),
+ *    @OA\Property(property="total", type="number"),
+ *    @OA\Property(property="status", type="string"),
+ *    @OA\Property(property="created_at", type="string", format="date-time"),
+ *    @OA\Property(property="updated_at", type="string", format="date-time")
+ * )
+ *
+ * @OA\Schema(
+ *    schema="OrderResponse",
+ *    type="object",
+ *    @OA\Property(property="id", type="integer"),
+ *    @OA\Property(property="user_id", type="integer"),
+ *    @OA\Property(property="total", type="number"),
+ *    @OA\Property(property="status", type="string"),
+ *    @OA\Property(property="created_at", type="string", format="date-time"),
+ *    @OA\Property(property="updated_at", type="string", format="date-time"),
+ *    @OA\Property(property="products", type="array", @OA\Items(ref="#/components/schemas/Product"))
+ * )
+ * 
+ * 
+ * @OA\Schema(
+ *    schema="ProductOrderRequest",
+ *    type="object",
+ *    @OA\Property(property="product_id", type="integer", example=4),
+ *    @OA\Property(property="quantity", type="integer", example=1),
+ * )
+ *
+ *
+ * @OA\Schema(
+ *    schema="CreateOrderRequest",
+ *    type="object",
+ *    @OA\Property(property="user_id", type="integer"),
+ *    @OA\Property(property="status", type="string", example="pendiente"),
+ *    @OA\Property(property="products", type="array", @OA\Items(ref="#/components/schemas/ProductOrderRequest"))
+ * )
+ * 
+ * 
+ * @OA\Schema(
+ *   schema="UpdateOrderRequest",
+ *   type="object",
+ *   @OA\Property(property="status", type="string", example="pendiente"),
+ *   @OA\Property(property="products", type="array", @OA\Items(ref="#/components/schemas/ProductOrderRequest"))
+ * )
+ *
  *
  */
 

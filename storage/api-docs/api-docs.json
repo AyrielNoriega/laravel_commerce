@@ -12,6 +12,154 @@
         }
     ],
     "paths": {
+        "/api/v1/orders": {
+            "get": {
+                "tags": [
+                    "orders"
+                ],
+                "summary": "Get list of orders",
+                "operationId": "00d3856d2d3d93124e0cc021d0cb5b79",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/OrderResponse"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "orders"
+                ],
+                "summary": "Create a orders",
+                "operationId": "79da0a1adcc617490783dfd61927ff56",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateOrderRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Product created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Order"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/orders/{order}": {
+            "get": {
+                "tags": [
+                    "orders"
+                ],
+                "summary": "Get a order by ID",
+                "operationId": "38713af501dbd66af5a66bd568a49bc2",
+                "parameters": [
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrderResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "orders"
+                ],
+                "summary": "Delete a order",
+                "operationId": "4baa2e826530c2663217ed85efd8e3e3",
+                "parameters": [
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Order deleted successfully"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "orders"
+                ],
+                "summary": "Update an order",
+                "operationId": "25408827628495f84fbaecb37dd89c84",
+                "parameters": [
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateOrderRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Order updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrderResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Order not found"
+                    }
+                }
+            }
+        },
         "/api/v1/products": {
             "get": {
                 "tags": [
@@ -256,10 +404,116 @@
                     }
                 },
                 "type": "object"
+            },
+            "Order": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "user_id": {
+                        "type": "integer"
+                    },
+                    "total": {
+                        "type": "number"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "OrderResponse": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "user_id": {
+                        "type": "integer"
+                    },
+                    "total": {
+                        "type": "number"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "products": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Product"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "ProductOrderRequest": {
+                "properties": {
+                    "product_id": {
+                        "type": "integer",
+                        "example": 4
+                    },
+                    "quantity": {
+                        "type": "integer",
+                        "example": 1
+                    }
+                },
+                "type": "object"
+            },
+            "CreateOrderRequest": {
+                "properties": {
+                    "user_id": {
+                        "type": "integer"
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "pendiente"
+                    },
+                    "products": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ProductOrderRequest"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateOrderRequest": {
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "pendiente"
+                    },
+                    "products": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ProductOrderRequest"
+                        }
+                    }
+                },
+                "type": "object"
             }
         }
     },
     "tags": [
+        {
+            "name": "orders",
+            "description": "orders"
+        },
         {
             "name": "products",
             "description": "products"

@@ -9,19 +9,17 @@ use Illuminate\Support\Str;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
  */
-class ProductFactory extends Factory
+class OrderFactory extends Factory
 {
 
     public function definition(): array
     {
         return [
-            'title'         => fake()->name(),
-            'image'         => 'https://goshofi.com/wp-content/uploads/2023/03/kit1-scaled.jpg', //fake()->imageUrl($width = 640, $height = 480),
-            'description'   => fake()->sentence($nbWords = 7, $variableNbWords = true),
-            'price'         => fake()->numberBetween(10000, 60000),
             'user_id'       => function () {
                 return \App\Models\User::query()->inRandomOrder()->first()->id;
             },
+            'total'         => fake()->randomFloat(2, 20, 1000),
+            'status'        => fake()->randomElement(['pendiente', 'completado']),
         ];
     }
 
