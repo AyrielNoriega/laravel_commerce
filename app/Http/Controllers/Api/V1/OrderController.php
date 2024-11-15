@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Exceptions\OrderNotFoundException;
+use App\Exceptions\ProductNotFoundException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
@@ -37,7 +39,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $orders = Order::with('products')->get();
+        $orders = $this->orderService->getAllOrders();
         return new OrderCollection($orders);
     }
 
@@ -63,30 +65,14 @@ class OrderController extends Controller
     public function store(StoreOrderRequest $request)
     {
 
-        // Calcular el total de la orden
-        $total = collect($request->products)->sum(function ($product) {
-            $productModel = Product::findOrFail($product['product_id']);
-            return $productModel->price * $product['quantity'];
-        });
-
-        $order = Order::create([
-            'user_id' => $request->user_id,
-            'total' => $total,
-            'status' => $request->status,
-        ]);
-
-        // Asociar los productos a la orden
-        foreach ($request->products as $product) {
-            $productModel = Product::findOrFail($product['product_id']);
-            $order->products()->attach($product['product_id'], [
-                'quantity' => $product['quantity'],
-                'price' => $productModel->price,
-            ]);
+        try {
+            $order = $this->orderService->createOrder($request);
+            return new OrderResource($order);
+        } catch (ProductNotFoundException $e) {
+            return response()->json(['error' => 'Product not found'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred'], 500);
         }
-
-        $p = new OrderResource($order->load('products'));
-
-        return $p;
     }
 
 
@@ -111,9 +97,9 @@ class OrderController extends Controller
     public function show(int $id)
     {
         try {
-            $order = Order::with('products')->findOrFail($id);
+            $order = $this->orderService->getOrderById($id);
             return new OrderResource($order);
-        } catch (ModelNotFoundException $e) {
+        } catch (OrderNotFoundException $e) {
             return response()->json(['error' => 'Order not found'], 404);
         } catch (\Exception $e) {
             return response()->json(['error' => 'An error occurred'], 500);
@@ -174,14 +160,18 @@ class OrderController extends Controller
      *     @OA\Response(
      *         response=204,
      *         description="Order deleted successfully",
+     *     ),
+     * 
+     * @OA\Response(
+     *         response=404,
+     *         description="Order not found"
      *     )
      * )
      */
     public function destroy(int $id)
     {
         try {
-            $order = Order::findOrFail($id);
-            $order->delete();
+            $this->orderService->deleteOrder($id);
             return response()->json(null, 204);
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => 'Order not found'], 404);
