@@ -87,8 +87,7 @@ class ProductControllerTest extends TestCase
 
         $response = $this->deleteJson("/api/v1/products/{$product->getKey()}");
 
-        $response->assertSuccessful();
-        $response->assertHeader('content-type', 'application/json');
+        $response->assertStatus(204);
 
         $this->assertDatabaseMissing('products', ['id' => $product->id]);
 

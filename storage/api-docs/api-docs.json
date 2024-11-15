@@ -46,35 +46,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "required": [
-                                    "title",
-                                    "description",
-                                    "price",
-                                    "user_id"
-                                ],
-                                "properties": {
-                                    "title": {
-                                        "description": "Title of the product",
-                                        "type": "string",
-                                        "example": "Product 1"
-                                    },
-                                    "description": {
-                                        "description": "Description of the product",
-                                        "type": "string",
-                                        "example": "Description of the product"
-                                    },
-                                    "price": {
-                                        "description": "Price of the product",
-                                        "type": "number",
-                                        "example": 1000
-                                    },
-                                    "user_id": {
-                                        "description": "ID of the user who created the product",
-                                        "type": "integer",
-                                        "example": 1
-                                    }
-                                },
-                                "type": "object"
+                                "$ref": "#/components/schemas/StoreProductRequest"
                             }
                         }
                     }
@@ -82,6 +54,98 @@
                 "responses": {
                     "201": {
                         "description": "Product created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Product"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/products/{product}": {
+            "get": {
+                "tags": [
+                    "products"
+                ],
+                "summary": "Get a product by ID",
+                "operationId": "9d6564b9647b6b46ca1d3eb86c51643e",
+                "parameters": [
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Product"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "products"
+                ],
+                "summary": "Delete a product",
+                "operationId": "dc780252f855e97451083ce643a83174",
+                "parameters": [
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Product deleted successfully"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "products"
+                ],
+                "summary": "Update a product",
+                "operationId": "780ef5766bbb62de4378b38eb7cdfbda",
+                "parameters": [
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateProductRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Product updated successfully",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -102,16 +166,24 @@
                         "type": "integer"
                     },
                     "title": {
-                        "type": "string"
+                        "description": "Title of the product",
+                        "type": "string",
+                        "example": "Product 1"
                     },
                     "description": {
-                        "type": "string"
+                        "description": "Description of the product",
+                        "type": "string",
+                        "example": "Description of the product"
                     },
                     "price": {
-                        "type": "number"
+                        "description": "Price of the product",
+                        "type": "number",
+                        "example": 1000
                     },
                     "user_id": {
-                        "type": "integer"
+                        "description": "ID of the user who created the product",
+                        "type": "integer",
+                        "example": 1
                     },
                     "created_at": {
                         "type": "string",
@@ -120,6 +192,67 @@
                     "updated_at": {
                         "type": "string",
                         "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "StoreProductRequest": {
+                "required": [
+                    "title",
+                    "description",
+                    "price",
+                    "user_id"
+                ],
+                "properties": {
+                    "title": {
+                        "description": "Title of the product",
+                        "type": "string",
+                        "example": "Product 1"
+                    },
+                    "description": {
+                        "description": "Description of the product",
+                        "type": "string",
+                        "example": "Description of the product"
+                    },
+                    "price": {
+                        "description": "Price of the product",
+                        "type": "number",
+                        "example": 1000
+                    },
+                    "user_id": {
+                        "description": "ID of the user who created the product",
+                        "type": "integer",
+                        "example": 1
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateProductRequest": {
+                "properties": {
+                    "title": {
+                        "description": "Title of the product",
+                        "type": "string",
+                        "example": "Updated Product"
+                    },
+                    "image": {
+                        "description": "Image of the product",
+                        "type": "string",
+                        "example": "<url>"
+                    },
+                    "description": {
+                        "description": "Description of the product",
+                        "type": "string",
+                        "example": "Updated description"
+                    },
+                    "price": {
+                        "description": "Price of the product",
+                        "type": "number",
+                        "example": 1500
+                    },
+                    "user_id": {
+                        "description": "ID of the user who created the product",
+                        "type": "integer",
+                        "example": 1
                     }
                 },
                 "type": "object"

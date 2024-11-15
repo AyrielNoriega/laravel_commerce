@@ -27,6 +27,7 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+
     /**
      * @OA\Get(
      *     tags={"products"},
@@ -44,6 +45,7 @@ class ProductController extends Controller
         return new ProductCollection(Product::all());
     }
 
+
     /**
      * @OA\Post(
      *     path="/api/v1/products",
@@ -53,7 +55,7 @@ class ProductController extends Controller
      *         required=true,
      *         @OA\JsonContent(
      *             required={"title", "description", "price", "user_id"},
-     *             @OA\JsonContent(ref="#/components/schemas/Product")
+     *             ref="#/components/schemas/StoreProductRequest"
      *         )
      *     ),
      *     @OA\Response(
@@ -69,8 +71,24 @@ class ProductController extends Controller
         return $product;
     }
 
+
     /**
-     * Display the specified resource.
+     * @OA\Get(
+     *     path="/api/v1/products/{product}",
+     *     summary="Get a product by ID",
+     *     tags={"products"},
+     *     @OA\Parameter(
+     *         name="product",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/Product")
+     *     )
+     * )
      */
     public function show(Product $product)
     {
@@ -78,8 +96,28 @@ class ProductController extends Controller
         return new ProductResource($product);
     }
 
+
     /**
-     * Update the specified resource in storage.
+     * @OA\Patch(
+     *     path="/api/v1/products/{product}",
+     *     summary="Update a product",
+     *     tags={"products"},
+     *     @OA\Parameter(
+     *         name="product",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/UpdateProductRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Product updated successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/Product")
+     *     )
+     * )
      */
     public function update(UpdateProductRequest $request, Product $product)
     {
@@ -87,12 +125,27 @@ class ProductController extends Controller
         return new ProductResource($product);
     }
 
+
     /**
-     * Remove the specified resource from storage.
+     * @OA\Delete(
+     *     path="/api/v1/products/{product}",
+     *     summary="Delete a product",
+     *     tags={"products"},
+     *     @OA\Parameter(
+     *         name="product",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=204,
+     *         description="Product deleted successfully",
+     *     )
+     * )
      */
     public function destroy(Product $product)
     {
         $product->delete();
-        return response()->json();
+        return response()->json(null, 204);
     }
 }

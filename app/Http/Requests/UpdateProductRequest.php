@@ -23,6 +23,7 @@ class UpdateProductRequest extends FormRequest
     {
         return [
             'title' => 'required',
+            'image' => 'string',
             'description' => 'required',
             'price' => 'required',
         ];
