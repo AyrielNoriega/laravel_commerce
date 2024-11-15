@@ -9,12 +9,20 @@ use App\Http\Resources\V1\OrderCollection;
 use App\Http\Resources\V1\OrderResource;
 use App\Models\Order;
 use App\Models\Product;
+use App\Services\OrderService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
 
 class OrderController extends Controller
 {
+
+    protected $orderService;
+
+    public function __construct(OrderService $orderService)
+    {
+        $this->orderService = $orderService;
+    }
     /**
      * @OA\Get(
      *     tags={"orders"},
@@ -142,32 +150,12 @@ class OrderController extends Controller
     public function update(UpdateOrderRequest $request, int $id)
     {
         try {
-            $order = Order::findOrFail($id);
-            $order->update($request->only(['status']));
-
-            $total = collect($request->products)->sum(function ($product) {
-                $productModel = Product::findOrFail($product['product_id']);
-                return $productModel->price * $product['quantity'];
-            });
-
-            $order->update(['total' => $total]);
-
-            // Sincronizar los productos asociados a la orden
-            $order->products()->detach();
-
-            foreach ($request->products as $product) {
-                $productModel = Product::findOrFail($product['product_id']);
-                $order->products()->attach($productModel->id, [
-                    'quantity' => $product['quantity'],
-                    'price' => $productModel->price,
-                ]);
-            }
-
-            return new OrderResource($order->load('products'));
+            $order = $this->orderService->updateOrder($id, $request);
+            return new OrderResource($order);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => 'Order not found'], 404);
+            return response()->json(['error' => "{$e->getMessage()}"], 404);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'An error occurred'], 500);
+            return response()->json(['error' => "{$e->getMessage()}"], 500);
         }
     }
 
