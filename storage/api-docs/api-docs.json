@@ -216,16 +216,16 @@
                 }
             }
         },
-        "/api/v1/products/{product}": {
+        "/api/v1/products/{product_id}": {
             "get": {
                 "tags": [
                     "products"
                 ],
                 "summary": "Get a product by ID",
-                "operationId": "9d6564b9647b6b46ca1d3eb86c51643e",
+                "operationId": "80b218bdf1769486e3a58d24f49fc0be",
                 "parameters": [
                     {
-                        "name": "product",
+                        "name": "product_id",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -245,7 +245,9 @@
                         }
                     }
                 }
-            },
+            }
+        },
+        "/api/v1/products/{product}": {
             "delete": {
                 "tags": [
                     "products"

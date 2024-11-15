@@ -37,6 +37,8 @@ namespace App\Swagger;
  *     @OA\Property(property="user_id", type="integer", example=1, description="ID of the user who created the product")
  * )
  *
+ * )
+ *
  * @OA\Schema(
  *    schema="Order",
  *    type="object",

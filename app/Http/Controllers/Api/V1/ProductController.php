@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Exceptions\ProductNotFoundException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Http\Resources\V1\ProductResource;
 use App\Http\Resources\V1\ProductCollection;
 use App\Models\Product;
+use App\Services\ProductService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
 
@@ -28,6 +31,13 @@ use Illuminate\Http\Request;
 class ProductController extends Controller
 {
 
+    protected $productService;
+
+    public function __construct(ProductService $productService)
+    {
+        $this->productService = $productService;
+    }
+
     /**
      * @OA\Get(
      *     tags={"products"},
@@ -42,7 +52,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return new ProductCollection(Product::all());
+        $products = $this->productService->getAllProducts();
+        return new ProductCollection($products);
     }
 
 
@@ -67,18 +78,18 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
-        $product = Product::create($request->all());
+        $product = $this->productService->createProduct($request->all());
         return $product;
     }
 
 
     /**
      * @OA\Get(
-     *     path="/api/v1/products/{product}",
+     *     path="/api/v1/products/{product_id}",
      *     summary="Get a product by ID",
      *     tags={"products"},
      *     @OA\Parameter(
-     *         name="product",
+     *         name="product_id",
      *         in="path",
      *         required=true,
      *         @OA\Schema(type="integer")
@@ -90,10 +101,16 @@ class ProductController extends Controller
      *     )
      * )
      */
-    public function show(Product $product)
+    public function show(int $id)
     {
-        $product = new ProductResource($product);
-        return  $product;
+        try {
+            $product = $this->productService->getProductById($id);
+            return  new ProductResource($product);
+        } catch (ProductNotFoundException $e) {
+            return response()->json(['error' => 'Product not found'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred'], 500);
+        }
     }
 
 
@@ -119,10 +136,16 @@ class ProductController extends Controller
      *     )
      * )
      */
-    public function update(UpdateProductRequest $request, Product $product)
+    public function update(UpdateProductRequest $request, int $id)
     {
-        $product->update($request->all());
-        return new ProductResource($product);
+        try {
+            $product = $this->productService->updateProduct($id, $request->all());
+            return new ProductResource($product);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => "{$e->getMessage()}"], 404);
+        } catch (\Exception $e) {
+            return response()->json(['error' => "{$e->getMessage()}"], 500);
+        }
     }
 
 
@@ -143,9 +166,15 @@ class ProductController extends Controller
      *     )
      * )
      */
-    public function destroy(Product $product)
+    public function destroy(int $id)
     {
-        $product->delete();
-        return response()->json(null, 204);
+
+        try {
+            return $this->productService->deleteProduct($id);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'Order not found'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred'], 500);
+        }
     }
 }
