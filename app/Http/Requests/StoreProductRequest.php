@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Auth;
 
 class StoreProductRequest extends FormRequest
@@ -28,5 +29,19 @@ class StoreProductRequest extends FormRequest
             'price' => 'required',
 
         ];
+    }
+
+    /**
+     * Handle a failed authorization attempt.
+     *
+     * @return void
+     *
+     * @throws \Illuminate\Http\Exceptions\HttpResponseException
+     */
+    protected function failedAuthorization()
+    {
+        throw new HttpResponseException(response()->json([
+            'error' => 'This action is unauthorized.'
+        ], 403));
     }
 }

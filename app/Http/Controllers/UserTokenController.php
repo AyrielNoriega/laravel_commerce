@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -13,7 +13,7 @@ class UserTokenController extends Controller
 {
     /**
      * @OA\Post(
-     *     path="/api/v1/token",
+     *     path="/api/sanctum/token",
      *     summary="Create a new token",
      *     tags={"tokens"},
      *     @OA\RequestBody(

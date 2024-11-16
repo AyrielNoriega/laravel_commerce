@@ -213,7 +213,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/api/v1/products/{product_id}": {
@@ -310,13 +315,13 @@
                 }
             }
         },
-        "/api/v1/token": {
+        "/api/sanctum/token": {
             "post": {
                 "tags": [
                     "tokens"
                 ],
                 "summary": "Create a new token",
-                "operationId": "cfbbb29b965f16c11a783d53d19fd281",
+                "operationId": "d1452e2f061d3f36dcf9cc493bcfc88a",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -580,6 +585,14 @@
                 },
                 "type": "object"
             }
+        },
+        "securitySchemes": {
+            "sanctum": {
+                "type": "apiKey",
+                "description": "Enter token in format (Bearer <token>)",
+                "name": "Authorization",
+                "in": "header"
+            }
         }
     },
     "tags": [
@@ -594,6 +607,14 @@
         {
             "name": "tokens",
             "description": "tokens"
+        }
+    ],
+    "security": [
+        {
+            "sanctum": [
+                "read",
+                "write"
+            ]
         }
     ]
 }

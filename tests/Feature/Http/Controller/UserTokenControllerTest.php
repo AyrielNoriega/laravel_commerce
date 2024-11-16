@@ -25,7 +25,7 @@ class UserTokenControllerTest extends TestCase
         ];
 
         // Hacer una solicitud POST a la ruta /sanctum/token
-        $response = $this->postJson('/api/v1/token', $data);
+        $response = $this->postJson('/api/sanctum/token', $data);
 
         // Verificar que la respuesta tenga un código de estado 200
         $response->assertStatus(200);
@@ -54,7 +54,7 @@ class UserTokenControllerTest extends TestCase
         ];
 
         // Hacer una solicitud POST a la ruta /sanctum/token
-        $response = $this->postJson('/api/v1/token', $data);
+        $response = $this->postJson('/api/sanctum/token', $data);
 
         // Verificar que la respuesta tenga un código de estado 422
         $response->assertStatus(422);

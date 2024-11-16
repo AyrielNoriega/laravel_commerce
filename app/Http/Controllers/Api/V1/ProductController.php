@@ -36,6 +36,7 @@ class ProductController extends Controller
     public function __construct(ProductService $productService)
     {
         $this->productService = $productService;
+        $this->middleware('auth:sanctum')->except(['index', 'show']);
     }
 
     /**
@@ -61,6 +62,7 @@ class ProductController extends Controller
      * @OA\Post(
      *     path="/api/v1/products",
      *     summary="Create a product",
+     *     security={{"bearerAuth": {}}},
      *     tags={"products"},
      *     @OA\RequestBody(
      *         required=true,
