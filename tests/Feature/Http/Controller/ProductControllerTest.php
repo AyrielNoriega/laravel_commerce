@@ -6,6 +6,8 @@ use App\Models\Product;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Laravel\Sanctum\Sanctum;
+
 use Tests\TestCase;
 
 class ProductControllerTest extends TestCase
@@ -27,7 +29,7 @@ class ProductControllerTest extends TestCase
     {
 
         $user = User::factory()->create();
-
+        Sanctum::actingAs($user, ['*']);
         $data = [
             'title' => 'Nuevo producto',
             'description' => 'It is a long established fact that a reader will be distracted.',
